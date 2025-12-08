@@ -1,7 +1,6 @@
 # mautrix-telegram - A Matrix-Telegram puppeting bridge
-# Copyright (C) 2021 Tulir Asokan
+# Copyright (C) 2025 Tulir Asokan & Akoi Deng
 #
-# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -159,7 +158,7 @@ async def transfer_thumbnail_to_matrix(
             log.warning(f"Failed to generate thumbnail for {loc_id}", exc_info=True)
             return None
         mime_type = "image/png"
-    else:
+    else: # file was not able to be allocated
         file = await client.download_file(thumbnail_loc)
         width, height = None, None
         mime_type = magic.mimetype(file)
@@ -193,6 +192,7 @@ async def transfer_thumbnail_to_matrix(
             "and might (but probably won't) cause problems with thumbnails or something."
         )
     return db_file
+    
 
 
 transfer_locks: dict[str, asyncio.Lock] = {}
