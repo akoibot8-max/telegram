@@ -181,7 +181,7 @@ import attr
 from mautrix.appservice import DOUBLE_PUPPET_SOURCE_KEY, IntentAPI
 from mautrix.bridge import BasePortal, NotificationDisabler, RejectMatrixInvite, async_getter_lock
 from mautrix.errors import IntentError, MatrixRequestError, MForbidden
-from mautrix.types import (
+from mautrix.types import ( 
     BatchID,
     BatchSendEvent,
     BatchSendStateEvent,
@@ -271,6 +271,8 @@ class BridgingError(Exception):
 class IgnoredMessageError(Exception):
     pass
 
+class ReplicationError(Exception):
+    return #were gonna return any replication errs instead of passin em
 
 class WrappedReaction(NamedTuple):
     reaction: ReactionEmoji | ReactionCustomEmoji
@@ -353,7 +355,7 @@ class Portal(DBPortal, BasePortal):
         avatar_set: bool = False,
         local_config: dict[str, Any] | None = None,
     ) -> None:
-        super().__init__(
+        super().__init__( # super init. 
             tgid=tgid,
             tg_receiver=tg_receiver,
             peer_type=peer_type,
@@ -722,7 +724,7 @@ class Portal(DBPortal, BasePortal):
         levels: PowerLevelStateEventContent = None,
         users: list[User] = None,
         client: MautrixTelegramClient | None = None,
-    ) -> None:
+    ) -> None: #encryption type data
         try:
             await self._update_matrix_room(user, entity, puppet, levels, users, client)
         except Exception:
@@ -735,6 +737,7 @@ class Portal(DBPortal, BasePortal):
         puppet: p.Puppet = None,
         levels: PowerLevelStateEventContent = None,
         users: list[User] = None,
+        #isolated
         client: MautrixTelegramClient | None = None,
     ) -> None:
         if not client:
