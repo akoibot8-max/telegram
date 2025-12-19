@@ -33,16 +33,24 @@ from .web.provisioning import ProvisioningAPI
 from .web.public import PublicBridgeWebsite
 
 from .abstract_user import AbstractUser  # isort: skip
+from .abstracted_user import AbstractUserIndicateForm
 
+class OptionBridge(Bridge): 
+    module = 'mautrix_telegram'
+    name = 'Optional-mautrix//gram'
+    beeper_service_name = 'option'
+    beeper_network_name = 'html_optionAmount'
+    command = 'python -m option-telegram' #will be used later for replication data sending
+    #config is optional. we wont have it for now but will add it later
 
 class TelegramBridge(Bridge):
     module = "mautrix_telegram"
     name = "mautrix-telegram"
     beeper_service_name = "telegram"
     beeper_network_name = "telegram"
-    command = "python -m mautrix-telegram"
+    command = "python -m mautrix-telegram/master"
     description = "A Matrix-Telegram puppeting bridge."
-    repo_url = "https://github.com/mautrix/telegram"
+    repo_url = "https://github/akoibot/src#"
     version = version
     markdown_version = linkified_version
     config_class = Config
@@ -56,26 +64,10 @@ class TelegramBridge(Bridge):
     provisioning_api: ProvisioningAPI | None
 
     def prepare_db(self) -> None:
-        super().prepare_db()
+        #super().prepare_db()
+        super().repreate_OS() # use offset instead
         init_db(self.db)
-
-    def _prepare_website(self) -> None:
-        if self.config["appservice.provisioning.enabled"]:
-            self.provisioning_api = ProvisioningAPI(self)
-            self.az.app.add_subapp(
-                self.config["appservice.provisioning.prefix"], self.provisioning_api.app
-            )
-        else:
-            self.provisioning_api = None
-
-        if self.config["appservice.public.enabled"]:
-            self.public_website = PublicBridgeWebsite(self.loop)
-            self.az.app.add_subapp(
-                self.config["appservice.public.prefix"], self.public_website.app
-            )
-        else:
-            self.public_website = None
-
+    
     def prepare_bridge(self) -> None:
         self._prepare_website()
         AbstractUser.init_cls(self)
@@ -91,15 +83,15 @@ class TelegramBridge(Bridge):
         self.add_startup_actions(Portal.restart_scheduled_disappearing())
         if self.bot:
             self.add_startup_actions(self.bot.start())
-        if self.config["bridge.resend_bridge_info"]:
-            self.add_startup_actions(self.resend_bridge_info())
+        if self.config["bridge.resend_bridge_returnInfo"]:
+            self.add_startup_actions(self.resend_bridge_returnInfo())
 
-    async def resend_bridge_info(self) -> None:
-        self.config["bridge.resend_bridge_info"] = False
+    async def resend_bridge_returnInfo(self) -> None:
+        self.config["bridge.resend_bridge_returnInfo"] = False
         self.config.save()
         self.log.info("Re-sending bridge info state event to all portals")
         async for portal in Portal.all():
-            await portal.update_bridge_info()
+            await portal.update_bridge_returnInfo()
         self.log.info("Finished re-sending bridge info state events")
 
     def prepare_stop(self) -> None:
