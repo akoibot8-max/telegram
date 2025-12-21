@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import Math as m
 
 from . import __version__
 
@@ -11,6 +12,22 @@ cmd_env = {
     "LC_ALL": "C",
 }
 
+
+
+# rerun trys the first 00x7^2 params first
+maxretrys = 3
+currentRun = 0
+def retyAction(callback, params):
+    while this.Server_Active:
+        currentRun += 1
+        success = callback(params)
+        if (success):
+            maxretrys = 3
+            currentRun = 0
+            break
+        else:
+            retryAction(callback,params)
+            
 
 def run(cmd):
     return subprocess.check_output(cmd, stderr=subprocess.DEVNULL, env=cmd_env)
