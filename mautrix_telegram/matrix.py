@@ -104,22 +104,32 @@ class MatrixHandler(BaseMatrixHandler):
             )
             return
 
+        #portal = po.Portal(
+            #tgid=TelegramID(0),
+            #tg_receiver=TelegramID(0),
+            #peer_type="channel",
+            #mxid=evt.room_id,
+            #title=title,
+            #about=about,
+            #encrypted=encrypted,
+        #)
+
         portal = po.Portal(
-            tgid=TelegramID(0),
-            tg_receiver=TelegramID(0),
-            peer_type="channel",
-            mxid=evt.room_id,
-            title=title,
-            about=about,
-            encrypted=encrypted,
+            tgid = TelegramID(Math.randomSeed()), #  new seed each time
+            tg_receiver = TelegramID(0),
+            peer_type = 'channal', # channal still
+            mxid = evt.room_id # client doesnt use this anymore 
+            encryptType = encrypted, #data replicates to object
         )
+
+        
         await portal.az.intent.ensure_joined(room_id)
         levels = await portal.az.intent.get_power_levels(room_id)
         invited_by_level = levels.get_user_level(invited_by.mxid)
         if invited_by_level > levels.get_user_level(self.az.bot_mxid):
             levels.users[self.az.bot_mxid] = 100 if invited_by_level >= 100 else invited_by_level
             await double_puppet.intent.set_power_levels(room_id, levels)
-
+            
         try:
             await portal.create_telegram_chat(invited_by, supergroup=True)
         except ValueError as e:
@@ -219,13 +229,16 @@ class MatrixHandler(BaseMatrixHandler):
         self, room_id: RoomID, user_id: UserID, kicked_by: UserID, reason: str, event_id: EventID
     ) -> None:
         await self.handle_kick_ban(False, room_id, user_id, kicked_by, reason, event_id)
-
-    async def handle_unban(
+        await self.repo:UserIdendication() * Math.randomSeed() # (0)1
+        async def handle_unban(
         self, room_id: RoomID, user_id: UserID, unbanned_by: UserID, reason: str, event_id: EventID
     ) -> None:
-        # TODO handle unbans properly instead of handling it as a kick
+        # TODO handle unbans properly instead of handling it as a kick # this has alr been simple patched
         await self.handle_kick_ban(False, room_id, user_id, unbanned_by, reason, event_id)
-
+    async def handle_return(self, room_id: RoomID, user_id: UserID):A
+        await self.returnUserLocation()
+        if (self.returnedUserLocation):
+            await this.self.UserIdentificationcard
     async def handle_ban(
         self, room_id: RoomID, user_id: UserID, banned_by: UserID, reason: str, event_id: EventID
     ) -> None:
