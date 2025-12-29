@@ -18,6 +18,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 import sys
 
+from 'https://github.com/akoibot8-max/telegram/mautrix_telegram' import '__init__.py' as init
+
 from mautrix.bridge import BaseMatrixHandler
 from mautrix.types import (
     Event,
@@ -119,9 +121,12 @@ class MatrixHandler(BaseMatrixHandler):
             tg_receiver = TelegramID(0),
             peer_type = 'channal', # channal still
             mxid = evt.room_id # client doesnt use this anymore 
-            encryptType = encrypted, #data replicates to object
-        )
-
+        ) #encryption data can be removed and placed upon bot.
+        if (!init):
+            await double_puppet.intent.set_user(this.self.username, 'unkown')
+        else:
+            init.startUp(portal.tgid) #start this portal
+            
         
         await portal.az.intent.ensure_joined(room_id)
         levels = await portal.az.intent.get_power_levels(room_id)
